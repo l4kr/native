@@ -178,6 +178,9 @@ if (process.env.STELLEWART_SIGNING === 'free') {
   delete expo.extra.iosSharedKeychainGroup;
   delete expo.extra.iosAppKeychainGroup;
   expo.extra.sourceCodeUrl = process.env.SOURCE_CODE_URL || 'https://github.com/l4kr/native/tree/stellewart';
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const { withDangerousMod } = require('@expo/config-plugins');
   // expo-notifications adds aps-environment even without its plugin entry; a
   // Personal Team can't sign it, so it is taken out last.
   const { withEntitlementsPlist } = require('@expo/config-plugins');
@@ -185,11 +188,21 @@ if (process.env.STELLEWART_SIGNING === 'free') {
     delete cfg.modResults['aps-environment'];
     return cfg;
   }));
+  // Xcode's build phases (Bundle React Native code, expo-constants) evaluate
+  // this file again without the caller's environment: the switch is written
+  // into ios/.xcode.env.local, which those phases source, so the app's
+  // embedded config is the free one too (else it names keychain groups the
+  // app has no entitlement for: "A required entitlement is not present").
+  expo.plugins.push((config) => withDangerousMod(config, ['ios', async (cfg) => {
+    const envFile = path.join(cfg.modRequest.platformProjectRoot, '.xcode.env.local');
+    const prev = fs.existsSync(envFile) ? fs.readFileSync(envFile, 'utf8') : '';
+    if (!/STELLEWART_SIGNING=free/.test(prev)) {
+      fs.writeFileSync(envFile, `${prev}${prev && !prev.endsWith('\n') ? '\n' : ''}export STELLEWART_SIGNING=free\n`);
+    }
+    return cfg;
+  }]));
   // ▶ Run in Xcode builds Release: the JS bundle is inside the app, so the
   // phone needs no Metro server on the Mac.
-  const fs = require('node:fs');
-  const path = require('node:path');
-  const { withDangerousMod } = require('@expo/config-plugins');
   expo.plugins.push((config) => withDangerousMod(config, ['ios', async (cfg) => {
     const name = cfg.modRequest.projectName;
     const scheme = path.join(cfg.modRequest.platformProjectRoot, `${name}.xcodeproj/xcshareddata/xcschemes/${name}.xcscheme`);
