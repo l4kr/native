@@ -121,6 +121,10 @@ export function describeLoginError(err: unknown, context: LoginErrorContext = {}
     // the mail server once the code was redeemed (`connect_failed`).
     const pairingHost = pairing.host || host;
     const copy = describePairingError(pairing.reason, pairingHost, t);
+    // Stellewart: say what actually failed after the code was redeemed, so a
+    // connect failure can be diagnosed from the screen.
+    const cause = pairing.reason === 'connect_failed' ? message.replace(/^Signed in, but connecting failed:\s*/, '') : '';
+    if (copy && cause && cause !== message) return { ...copy, detail: `${copy.detail} (${cause})` };
     if (copy) return copy;
   }
 
