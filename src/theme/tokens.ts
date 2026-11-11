@@ -134,11 +134,13 @@ export const DARK_COLORS: ThemePalette = {
   primaryForeground: '#171717',
   primaryBorder: 'rgba(250, 250, 250, 0.19)',
 
-  background: '#0a0a0a',
-  surface: '#262626',
-  surfaceHover: '#1a1a1a',
-  surfaceActive: '#262626',
-  card: '#141414',
+  // Stellewart: Fastmail's dark greys (a faint blue tint); the mail canvas
+  // (lib/email-dark-mode EMAIL_DARK_BACKGROUND) is the card colour.
+  background: '#121416',
+  surface: '#25292c',
+  surfaceHover: '#1f2326',
+  surfaceActive: '#25292c',
+  card: '#1b1e20',
   cardForeground: '#fafafa',
 
   text: '#fafafa',
@@ -152,7 +154,7 @@ export const DARK_COLORS: ThemePalette = {
   textLink: '#60a5fa',
 
   border: 'rgba(128, 128, 128, 0.3)',
-  borderLight: '#262626',
+  borderLight: '#2b2f33',
   borderFocus: '#d4d4d4',
 
   success: '#16a34a',

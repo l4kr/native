@@ -14,7 +14,8 @@ describe('standard theme tokens match the webmail', () => {
   });
 
   it('dark: white primary with near-black text on neutral greys', () => {
-    expect(DARK_COLORS.background).toBe('#0a0a0a');
+    // Stellewart: Fastmail's dark background instead of the webmail's #0a0a0a.
+    expect(DARK_COLORS.background).toBe('#121416');
     expect(DARK_COLORS.text).toBe('#fafafa');
     expect(DARK_COLORS.primary).toBe('#fafafa');
     expect(DARK_COLORS.primaryForeground).toBe('#171717');

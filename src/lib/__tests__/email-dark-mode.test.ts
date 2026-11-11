@@ -37,13 +37,19 @@ describe('darkenBackground', () => {
     expect(out.b).toBeGreaterThan(out.r);
   });
 
-  it('leaves vivid brand colours and dark fills as sent', () => {
-    const red = c('rgb(227, 6, 19)');
+  it('dims bright brand colours in their own hue and leaves dark fills as sent (Stellewart)', () => {
     const green = c('rgb(115, 215, 0)');
     const navy = c('rgb(0, 32, 91)');
-    expect(DM.darkenBackground(red)).toBe(red);
-    expect(DM.darkenBackground(green)).toBe(green);
+    const dimmed = DM.darkenBackground(green);
+    expect(lightness(dimmed)).toBeLessThan(lightness(green) * 0.8);
+    expect(dimmed.g).toBeGreaterThan(dimmed.r);
+    expect(dimmed.g).toBeGreaterThan(dimmed.b);
     expect(DM.darkenBackground(navy)).toBe(navy);
+  });
+
+  it('lands white exactly on the canvas (Stellewart)', () => {
+    const out = DM.darkenBackground(c('rgb(255, 255, 255)'));
+    expect(DM.formatColor(out)).toBe('rgb(27, 30, 32)');
   });
 
   it('keeps alpha', () => {

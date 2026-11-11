@@ -10,8 +10,8 @@ describe('mix', () => {
   });
 
   it('gives the webmail unread row tint (bg-accent/30)', () => {
-    // #1e3a8a at 30% over #0a0a0a, and #dbeafe at 30% over white.
-    expect(mix(DARK_COLORS.accent, DARK_COLORS.background, 0.3)).toBe('#101830');
+    // #1e3a8a at 30% over the Stellewart #121416 background, and #dbeafe at 30% over white.
+    expect(mix(DARK_COLORS.accent, DARK_COLORS.background, 0.3)).toBe('#161f39');
     expect(mix(LIGHT_COLORS.accent, LIGHT_COLORS.background, 0.3)).toBe('#f4f9ff');
   });
 });

@@ -263,7 +263,7 @@ describe('prepareEmailHtml', () => {
     expect(plain.recolorDark).toBe(true);
     expect(plain.html).not.toContain('invert(1)');
     expect(plain.html).toContain('<html class="bulwark-dark-pending"');
-    expect(plain.html).toContain('body { color: #e6e6e6; background: #141414; }');
+    expect(plain.html).toContain('body { color: #e3e5e6; background: #1b1e20; }');
     expect(plain.html).toContain('animation: bulwark-dark-reveal 0s 1.5s forwards');
 
     const light = prepareEmailHtml('<p>x</p>', { isDark: false });
