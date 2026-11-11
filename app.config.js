@@ -113,6 +113,8 @@ module.exports = {
       ['./plugins/ios-push', { apsEnvironment: APS_ENVIRONMENT, teamId: APPLE_TEAM_ID }],
       // TLS client certificates (#3): the iOS side of src/lib/client-cert.ts.
       './plugins/ios-client-cert',
+      // Stellewart: iOS 27 SDK requires the UIScene lifecycle (else the app is stopped at launch).
+      './plugins/ios-scene-lifecycle',
       // The iOS inbox widget (WidgetKit); src/widgets/ios.ts feeds it.
       ['./plugins/ios-widget', { teamId: APPLE_TEAM_ID }],
       // The reading fonts (Settings > Accessibility > Font) for the app's
