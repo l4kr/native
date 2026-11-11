@@ -176,4 +176,11 @@ if (process.env.STELLEWART_SIGNING === 'free') {
   delete expo.extra.iosSharedKeychainGroup;
   delete expo.extra.iosAppKeychainGroup;
   expo.extra.sourceCodeUrl = process.env.SOURCE_CODE_URL || 'https://github.com/l4kr/native/tree/stellewart';
+  // expo-notifications adds aps-environment even without its plugin entry; a
+  // Personal Team can't sign it, so it is taken out last.
+  const { withEntitlementsPlist } = require('@expo/config-plugins');
+  expo.plugins.push((config) => withEntitlementsPlist(config, (cfg) => {
+    delete cfg.modResults['aps-environment'];
+    return cfg;
+  }));
 }
