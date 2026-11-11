@@ -160,3 +160,20 @@ module.exports = {
     },
   },
 };
+
+// Stellewart: STELLEWART_SIGNING=free builds for a free Apple ID (Xcode
+// "Personal Team"), installed from Xcode and valid for 7 days. Free teams can't
+// sign push notifications, the widget or shared keychain groups, and the
+// upstream bundle id belongs to Bulwark's team, so this build gets its own id
+// and leaves those out. Mail, calendar and contacts work as usual; new mail
+// shows when the app is opened.
+if (process.env.STELLEWART_SIGNING === 'free') {
+  const expo = module.exports.expo;
+  const without = new Set(['./plugins/ios-push', './plugins/ios-widget', 'expo-notifications']);
+  expo.name = 'Stellewart';
+  expo.ios.bundleIdentifier = 'net.genoslab.stellewart.mail';
+  expo.plugins = expo.plugins.filter((p) => !without.has(Array.isArray(p) ? p[0] : p));
+  delete expo.extra.iosSharedKeychainGroup;
+  delete expo.extra.iosAppKeychainGroup;
+  expo.extra.sourceCodeUrl = process.env.SOURCE_CODE_URL || 'https://github.com/l4kr/native/tree/stellewart';
+}
