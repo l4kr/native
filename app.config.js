@@ -172,6 +172,8 @@ if (process.env.STELLEWART_SIGNING === 'free') {
   const without = new Set(['./plugins/ios-push', './plugins/ios-widget', 'expo-notifications']);
   expo.name = 'Stellewart';
   expo.ios.bundleIdentifier = 'net.genoslab.stellewart.mail';
+  // The Personal Team that signs it (not a secret); Xcode's ▶ Run needs no setup.
+  expo.ios.appleTeamId = process.env.STELLEWART_TEAM_ID || '9PLQMFXJH4';
   expo.plugins = expo.plugins.filter((p) => !without.has(Array.isArray(p) ? p[0] : p));
   delete expo.extra.iosSharedKeychainGroup;
   delete expo.extra.iosAppKeychainGroup;
@@ -183,4 +185,18 @@ if (process.env.STELLEWART_SIGNING === 'free') {
     delete cfg.modResults['aps-environment'];
     return cfg;
   }));
+  // ▶ Run in Xcode builds Release: the JS bundle is inside the app, so the
+  // phone needs no Metro server on the Mac.
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const { withDangerousMod } = require('@expo/config-plugins');
+  expo.plugins.push((config) => withDangerousMod(config, ['ios', async (cfg) => {
+    const name = cfg.modRequest.projectName;
+    const scheme = path.join(cfg.modRequest.platformProjectRoot, `${name}.xcodeproj/xcshareddata/xcschemes/${name}.xcscheme`);
+    if (fs.existsSync(scheme)) {
+      const xml = fs.readFileSync(scheme, 'utf8');
+      fs.writeFileSync(scheme, xml.replace(/(<LaunchAction[^>]*buildConfiguration = )"Debug"/, '$1"Release"'));
+    }
+    return cfg;
+  }]));
 }
